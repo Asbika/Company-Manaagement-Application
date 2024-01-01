@@ -28,5 +28,53 @@ public class ProjectPhase {
     public ProjectPhase() {
     }
 
+    public Long getPhaseID() {
+        return phaseID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setPhaseID(Long phaseID) {
+        this.phaseID = phaseID;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
+
     // Ajoutez ici les getters, setters et méthodes utilitaires
 }
