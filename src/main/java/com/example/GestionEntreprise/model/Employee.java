@@ -137,4 +137,9 @@ public class Employee {
         this.salary = salary;
     }
     // Ajoutez ici d'autres méthodes utilitaires si nécessaire
+
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
 }
