@@ -1,5 +1,6 @@
 package com.example.GestionEntreprise.controller;
 
+import com.example.GestionEntreprise.model.Employee;
 import com.example.GestionEntreprise.model.EmployeeProject;
 import com.example.GestionEntreprise.service.EmployeeProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,4 +22,9 @@ public class EmployeeProjectController {
     }
 
     // Autres endpoints pour POST, PUT, DELETE, etc.
+
+    /*@GetMapping("/{projectId}/available-employees")
+    public List<Employee> getAvailableEmployeesForProject(@PathVariable Long projectId) {
+        return projectService.getAvailableEmployeesForProject(projectId);
+    }*/
 }
