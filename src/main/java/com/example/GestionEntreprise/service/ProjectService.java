@@ -2,7 +2,6 @@ package com.example.GestionEntreprise.service;
 
 import com.example.GestionEntreprise.enums.ProjectStatus;
 import com.example.GestionEntreprise.model.Employee;
-import com.example.GestionEntreprise.model.EmployeeProject;
 import com.example.GestionEntreprise.model.Project;
 import com.example.GestionEntreprise.repository.EmployeeProjectRepository;
 import com.example.GestionEntreprise.repository.EmployeeRepository;
