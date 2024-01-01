@@ -22,6 +22,7 @@ public class EmployeeService {
         return employeeRepository.findByFirstNameContainingOrLastNameContaining(name, name);
     }
 
+
     public BigDecimal calculateAnnualSalary(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
             .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + employeeId));
@@ -30,6 +31,10 @@ public class EmployeeService {
     
     public List<Employee> findAll() {
         return employeeRepository.findAll();
+    }
+
+    public Employee getdById(Long id){
+        return employeeRepository.findById(id).get();
     }
 }
 

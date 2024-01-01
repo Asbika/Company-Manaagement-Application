@@ -1,32 +1,21 @@
 package com.example.GestionEntreprise.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "task")
-public class Task {
+public class TaskDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long taskID;
-
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Long responsibleId;
+    private Long projectPhaseId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "responsibleID")
-    private Employee responsible;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phaseID")
-    private ProjectPhase projectPhase;
-
-    // Constructeur par défaut et autres méthodes si nécessaire
-
-    public Task() {
+    public TaskDto() {
     }
 
     public void setTaskID(Long taskID) {
@@ -45,12 +34,12 @@ public class Task {
         this.endDate = endDate;
     }
 
-    public void setResponsible(Employee responsible) {
-        this.responsible = responsible;
+    public void setResponsibleId(Long responsibleId) {
+        this.responsibleId = responsibleId;
     }
 
-    public void setProjectPhase(ProjectPhase projectPhase) {
-        this.projectPhase = projectPhase;
+    public void setProjectPhaseId(Long projectPhaseId) {
+        this.projectPhaseId = projectPhaseId;
     }
 
     public Long getTaskID() {
@@ -69,13 +58,11 @@ public class Task {
         return endDate;
     }
 
-    public Employee getResponsible() {
-        return responsible;
+    public Long getResponsibleId() {
+        return responsibleId;
     }
 
-    public ProjectPhase getProjectPhase() {
-        return projectPhase;
+    public Long getProjectPhaseId() {
+        return projectPhaseId;
     }
-
-    // Méthodes utilitaires si nécessaire
 }

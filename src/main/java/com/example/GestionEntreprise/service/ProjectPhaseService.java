@@ -17,5 +17,9 @@ public class ProjectPhaseService {
         return projectPhaseRepository.findAll();
     }
 
+    public ProjectPhase findById(Long id){
+        return projectPhaseRepository.findById(id).get();
+    }
+
     // Autres méthodes métier pour ProjectPhase
 }
