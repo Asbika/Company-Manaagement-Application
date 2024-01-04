@@ -43,12 +43,12 @@ public class Project {
     // Ajoutez ici les getters, setters et les méthodes utilitaires
 
 
-    public Long getProjectID() {
-        return projectID;
-    }
-
     public void setProjectID(Long projectID) {
         this.projectID = projectID;
+    }
+
+    public Long getProjectID() {
+        return projectID;
     }
 
     public String getProjectName() {

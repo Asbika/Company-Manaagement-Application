@@ -1,5 +1,7 @@
 package com.example.GestionEntreprise.controller;
 
+import com.example.GestionEntreprise.dtos.EmployeeDto;
+import com.example.GestionEntreprise.dtos.ProjectDto;
 import com.example.GestionEntreprise.enums.ProjectStatus;
 import com.example.GestionEntreprise.model.Employee;
 import com.example.GestionEntreprise.model.Project;
@@ -20,25 +22,26 @@ public class ProjectController {
 
     // Endpoint pour obtenir tous les projets
     @GetMapping
-    public List<Project> getAllProjects() {
+    public List<ProjectDto> getAllProjects() {
         return projectService.getProjects();
     }
 
     // Autres endpoints pour POST, PUT, DELETE, etc.
 
     @PostMapping
-    public Project addProject(@RequestBody Project project) {
-        return projectService.createProject(project);
+    public ProjectDto addProject(@RequestBody ProjectDto projectDto) {
+        return projectService.createProject(projectDto);
     }
 
     @GetMapping("/{projectId}")
-    public Project getProjectById(@PathVariable Long projectId) {
+    public ProjectDto getProjectById(@PathVariable Long projectId) {
         return projectService.getProjectById(projectId);
     }
 
     @PutMapping("/{projectId}")
-    public void updateProject(@PathVariable Long projectId, @RequestBody Project project) {
-        projectService.updateProject(projectId, project);
+    public ProjectDto updateProject(@PathVariable Long projectId, @RequestBody ProjectDto projectDto) {
+        projectDto.setProjectID(projectId);
+        return projectService.updateProject(projectDto);
     }
 
     @DeleteMapping("/{projectId}")
@@ -47,17 +50,17 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/employees-by-project")
-    public Set<Employee> getEmployeesByProject(@PathVariable Long projectId) {
+    public Set<EmployeeDto> getEmployeesByProject(@PathVariable Long projectId) {
         return projectService.getEmployeesByProject(projectId);
     }
 
     @GetMapping("/{status}/projects-by-status")
-    public List<Project> getProjectsByStatus(@PathVariable ProjectStatus status) {
+    public List<ProjectDto> getProjectsByStatus(@PathVariable ProjectStatus status) {
         return projectService.getProjectsByStatus(status);
     }
 
     @GetMapping("/{type}/projects-by-type")
-    public List<Project> getProjectsByType(@PathVariable String type) {
+    public List<ProjectDto> getProjectsByType(@PathVariable String type) {
         return projectService.getProjectsByType(type);
     }
 
@@ -73,12 +76,12 @@ public class ProjectController {
     }
 
     @GetMapping("/projects-canceled")
-    public List<Project> getCanceledProjects() {
+    public List<ProjectDto> getCanceledProjects() {
         return projectService.getCanceledProjects();
     }
 
     @GetMapping("/projects-completed")
-    public List<Project> getCompletedProjects() {
+    public List<ProjectDto> getCompletedProjects() {
         return projectService.getCompletedProjects();
     }
 

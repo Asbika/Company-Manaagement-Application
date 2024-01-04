@@ -2,7 +2,7 @@ package com.example.GestionEntreprise.mappers;
 
 import com.example.GestionEntreprise.model.Employee;
 import com.example.GestionEntreprise.model.Payroll;
-import com.example.GestionEntreprise.model.PayrollDto;
+import com.example.GestionEntreprise.dtos.PayrollDto;
 import com.example.GestionEntreprise.service.EmployeeService;
 
 public class PayrollMapper {

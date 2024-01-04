@@ -18,6 +18,10 @@ public class ProjectPhase {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    public void setPhaseID(Long phaseID) {
+        this.phaseID = phaseID;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "projectID")
     private Project project;
@@ -50,10 +54,6 @@ public class ProjectPhase {
 
     public Set<Task> getTasks() {
         return tasks;
-    }
-
-    public void setPhaseID(Long phaseID) {
-        this.phaseID = phaseID;
     }
 
     public void setDescription(String description) {

@@ -1,17 +1,23 @@
 package com.example.GestionEntreprise.service;
 
+import com.example.GestionEntreprise.dtos.EmployeeDto;
+import com.example.GestionEntreprise.dtos.ProjectDto;
+import com.example.GestionEntreprise.dtos.ProjectPhaseDto;
 import com.example.GestionEntreprise.enums.ProjectStatus;
+import com.example.GestionEntreprise.mappers.EmployeeMapper;
+import com.example.GestionEntreprise.mappers.ProjectMapper;
 import com.example.GestionEntreprise.model.Employee;
+import com.example.GestionEntreprise.model.Expense;
 import com.example.GestionEntreprise.model.Project;
-import com.example.GestionEntreprise.repository.EmployeeProjectRepository;
-import com.example.GestionEntreprise.repository.EmployeeRepository;
-import com.example.GestionEntreprise.repository.ProjectRepository;
+import com.example.GestionEntreprise.model.ProjectPhase;
+import com.example.GestionEntreprise.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,37 +29,78 @@ public class ProjectService {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private EmployeeProjectRepository employeeProjectRepository;
+    private ProjectPhaseRepository projectPhaseRepository;
+    @Autowired
+    private ExpenseRepository expenseRepository;
 
-    public List<Project> getProjects() {
-        return projectRepository.findAll();
+    @Autowired
+    private ProjectMapper projectMapper;
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
+    public List<ProjectDto> getProjects() {
+        List<Project> projects = projectRepository.findAll();
+        List<ProjectDto> projectDtos = projects.stream()
+                .map(project -> projectMapper.fromProject(project))
+                .collect(Collectors.toList());
+
+        return projectDtos;
     }
 
     // Autres méthodes métier pour Project
 
-    public Project createProject(Project project) {
+    public ProjectDto createProject(ProjectDto projectDto) {
+        Project project = projectMapper.fromProjectDto(projectDto);
         if (project.getProjectID() != null) {
             throw new IllegalArgumentException("Cannot create a project with this id");
         }
-
-        return projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
+        return projectMapper.fromProject(savedProject);
     }
 
-    public void updateProject(Long projectId, Project project) {
-        Project oldProject = projectRepository.findById(projectId)
+    public ProjectDto updateProject(ProjectDto projectDto) {
+        /*Project oldProject = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
-        oldProject.setProjectName(project.getProjectName());
-        oldProject.setBudget(project.getBudget());
-        oldProject.setAmountPaid(project.getAmountPaid());
-        oldProject.setCreationDate(project.getCreationDate());
-        oldProject.setProjectType(project.getProjectType());
-        oldProject.setOwner(project.getOwner());
-        oldProject.setDescription(project.getDescription());
-        oldProject.setProjectStatus(project.getProjectStatus());
-        oldProject.setPhases(project.getPhases());
-        oldProject.setEmployees(project.getEmployees());
-        oldProject.setExpenses(project.getExpenses());
-        projectRepository.save(oldProject);
+        oldProject.setProjectName(projectDto.getProjectName());
+        oldProject.setBudget(projectDto.getBudget());
+        oldProject.setAmountPaid(projectDto.getAmountPaid());
+        oldProject.setCreationDate(projectDto.getCreationDate());
+        oldProject.setProjectType(projectDto.getProjectType());
+        oldProject.setOwner(employeeRepository.findById(projectDto.getOwnerId()).get());
+        oldProject.setDescription(projectDto.getDescription());
+        oldProject.setProjectStatus(projectDto.getProjectStatus());
+        oldProject.setPhases(loadPhases(projectDto.getProjectPhaseId()));
+        oldProject.setEmployees(loadEmployees(projectDto.getEmployeesId()));
+        oldProject.setExpenses(loadExpenses(projectDto.getExpensesId()));
+        projectRepository.save(oldProject);*/
+
+        Project project = projectMapper.fromProjectDto(projectDto);
+        Project updatedProject = projectRepository.save(project);
+        return projectMapper.fromProject(updatedProject);
+    }
+
+    private Set<ProjectPhase> loadPhases(Set<Long> phasesId) {
+        return phasesId.stream()
+                .map(projectPhaseRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Employee> loadEmployees(Set<Long> employeesId) {
+        return employeesId.stream()
+                .map(employeeRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<Expense> loadExpenses(Set<Long> expensesId) {
+        return expensesId.stream()
+                .map(expenseRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
     }
 
     public void deleteProject(Long projectId) {
@@ -62,24 +109,35 @@ public class ProjectService {
         projectRepository.deleteById(projectId);
     }
 
-    public Project getProjectById(Long projectId) {
-
-        return projectRepository.findById(projectId)
+    public ProjectDto getProjectById(Long projectId) {
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
+        return projectMapper.fromProject(project);
     }
 
-    public Set<Employee> getEmployeesByProject(Long projectId) {
+    public Set<EmployeeDto> getEmployeesByProject(Long projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Project with ID " + projectId + " not found"));
-        return project.getEmployees();
+        Set<Employee> employees = project.getEmployees();
+        Set<EmployeeDto> employeeDtos = employees.stream()
+                .map(employee -> employeeMapper.fromEmployee(employee))
+                .collect(Collectors.toSet());
+        return employeeDtos;
     }
 
-    public List<Project> getProjectsByStatus(ProjectStatus status) {
-        return projectRepository.findByProjectStatus(status);
+    public List<ProjectDto> getProjectsByStatus(ProjectStatus status) {
+        List<Project> projects = projectRepository.findByProjectStatus(status);
+        List<ProjectDto> projectDtos = projects.stream()
+                .map(project -> projectMapper.fromProject(project))
+                .collect(Collectors.toList());
+        return projectDtos;
     }
 
-    public List<Project> getProjectsByType(String type) {
-        return projectRepository.findByProjectType(type);
+    public List<ProjectDto> getProjectsByType(String type) {
+        List<Project> projects = projectRepository.findByProjectType(type);
+        return projects.stream()
+                .map(project -> projectMapper.fromProject(project))
+                .collect(Collectors.toList());
     }
 
     public BigDecimal calculRemainingBudget(Long projectId) {
@@ -96,20 +154,24 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    public List<Project> getCanceledProjects() {
+    public List<ProjectDto> getCanceledProjects() {
         List<Project> allProjects = projectRepository.findAll();
         List<Project> canceledProjects = allProjects.stream()
                 .filter(project -> project.getProjectStatus().equals(ProjectStatus.CANCELED))
                 .collect(Collectors.toList());
-        return canceledProjects;
+        return canceledProjects.stream()
+                .map(project -> projectMapper.fromProject(project))
+                .collect(Collectors.toList());
     }
 
-    public List<Project> getCompletedProjects() {
+    public List<ProjectDto> getCompletedProjects() {
         List<Project> allProjects = projectRepository.findAll();
         List<Project> completedProjects = allProjects.stream()
                 .filter(project -> project.getProjectStatus().equals(ProjectStatus.COMPLETED))
                 .collect(Collectors.toList());
-        return completedProjects;
+        return completedProjects.stream()
+                .map(project -> projectMapper.fromProject(project))
+                .collect(Collectors.toList());
     }
 
 

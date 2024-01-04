@@ -2,7 +2,7 @@ package com.example.GestionEntreprise.controller;
 
 import com.example.GestionEntreprise.mappers.PayrollMapper;
 import com.example.GestionEntreprise.model.Payroll;
-import com.example.GestionEntreprise.model.PayrollDto;
+import com.example.GestionEntreprise.dtos.PayrollDto;
 import com.example.GestionEntreprise.service.EmployeeService;
 import com.example.GestionEntreprise.service.PayrollService;
 import org.springframework.beans.factory.annotation.Autowired;

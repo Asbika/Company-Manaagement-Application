@@ -1,6 +1,7 @@
 package com.example.GestionEntreprise.repository;
 
 import com.example.GestionEntreprise.enums.ProjectStatus;
+import com.example.GestionEntreprise.model.Employee;
 import com.example.GestionEntreprise.model.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 

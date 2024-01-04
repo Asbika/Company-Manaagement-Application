@@ -1,37 +1,30 @@
-package com.example.GestionEntreprise.model;
-
-import jakarta.persistence.*;
+package com.example.GestionEntreprise.dtos;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "expense")
-public class Expense {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ExpenseDto {
     private Long expenseID;
-
     private BigDecimal amount;
     private String description;
     private String expenseType;
+    private Long projectId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "projectID")
-    private Project project;
-
-    public Expense() {
+    public ExpenseDto() {
     }
 
-    // Ajoutez ici les getters, setters et méthodes utilitaires
-
-
-    public Long getExpenseID() {
-        return expenseID;
+    public ExpenseDto(BigDecimal amount, String description, String expenseType, Long projectId) {
+        this.amount = amount;
+        this.description = description;
+        this.expenseType = expenseType;
+        this.projectId = projectId;
     }
 
     public void setExpenseID(Long expenseID) {
         this.expenseID = expenseID;
+    }
+
+    public Long getExpenseID() {
+        return expenseID;
     }
 
     public BigDecimal getAmount() {
@@ -58,11 +51,11 @@ public class Expense {
         this.expenseType = expenseType;
     }
 
-    public Project getProject() {
-        return project;
+    public Long getProjectId() {
+        return projectId;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 }

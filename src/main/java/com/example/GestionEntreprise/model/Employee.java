@@ -47,6 +47,10 @@ public class Employee {
         return lastName;
     }
 
+    public void setEmployeeID(Long employeeID) {
+        this.employeeID = employeeID;
+    }
+
     public String getEmail() {
         return email;
     }

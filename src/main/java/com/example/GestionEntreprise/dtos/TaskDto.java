@@ -1,4 +1,4 @@
-package com.example.GestionEntreprise.model;
+package com.example.GestionEntreprise.dtos;
 
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
