@@ -120,7 +120,7 @@ public class ProjectService {
                 .orElseThrow(() -> new EntityNotFoundException("Project with ID " + projectId + " not found"));
         Set<Employee> employees = project.getEmployees();
         Set<EmployeeDto> employeeDtos = employees.stream()
-                .map(employee -> employeeMapper.fromEmployee(employee))
+                .map(employee -> employeeMapper.mapToEmployeeDto(employee))
                 .collect(Collectors.toSet());
         return employeeDtos;
     }

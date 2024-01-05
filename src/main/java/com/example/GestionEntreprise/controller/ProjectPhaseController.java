@@ -14,8 +14,12 @@ import java.util.Set;
 @RequestMapping("/project-phases")
 public class ProjectPhaseController {
 
-    @Autowired
     private ProjectPhaseService projectPhaseService;
+
+    @Autowired
+    public ProjectPhaseController(ProjectPhaseService projectPhaseService) {
+        this.projectPhaseService = projectPhaseService;
+    }
 
     // Endpoint pour obtenir toutes les phases de projet
     @GetMapping

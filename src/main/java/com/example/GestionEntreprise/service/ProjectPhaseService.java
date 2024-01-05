@@ -22,15 +22,25 @@ public class ProjectPhaseService {
 
     @Autowired
     private ProjectPhaseRepository projectPhaseRepository;
+
     @Autowired
     private ProjectRepository projectRepository;
 
     @Autowired
     private ProjectPhaseMapper projectPhaseMapper;
-    @Autowired
+
     private TaskMapper taskMapper;
-    @Autowired
     private TaskService taskService;
+
+    @Autowired
+    public void setTaskMapper(TaskMapper taskMapper) {
+        this.taskMapper = taskMapper;
+    }
+
+    @Autowired
+    public ProjectPhaseService(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     public List<ProjectPhaseDto> getAllProjectPhases() {
         List<ProjectPhase> projectPhases = projectPhaseRepository.findAll();

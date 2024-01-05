@@ -20,20 +20,29 @@ public class Employee {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private String gender;
-    private LocalDate dateOfBirth;
-    private String cnss;
-    private String rib;
-    private String bankName;
-    private String cin;
-    private String companyProfile;
     @Lob
-    private String cv;
     private LocalDate hireDate;
     private BigDecimal salary;
     private String contractType;
-    private Integer contractDuration;
-    private String employeeStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "divisionID")
+    private Division division;
+
+    @OneToMany(mappedBy = "responsible", cascade = CascadeType.ALL)
+    private Set<Task> tasks = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "employee_project",
+            joinColumns = @JoinColumn(name = "employeeID"),
+            inverseJoinColumns = @JoinColumn(name = "projectID")
+    )
+    private Set<Project> projects = new HashSet<>();
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private Set<Payroll> payrolls = new HashSet<>();
+
 
     public Long getEmployeeID() {
         return employeeID;
@@ -47,9 +56,6 @@ public class Employee {
         return lastName;
     }
 
-    public void setEmployeeID(Long employeeID) {
-        this.employeeID = employeeID;
-    }
 
     public String getEmail() {
         return email;
@@ -59,91 +65,64 @@ public class Employee {
         return phoneNumber;
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public String getCnss() {
-        return cnss;
-    }
-
-    public String getRib() {
-        return rib;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public String getCin() {
-        return cin;
-    }
-
-    public String getCompanyProfile() {
-        return companyProfile;
-    }
-
-    public String getCv() {
-        return cv;
-    }
-
     public LocalDate getHireDate() {
         return hireDate;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
     }
 
     public String getContractType() {
         return contractType;
     }
 
-    public Integer getContractDuration() {
-        return contractDuration;
+    public Set<Task> getTasks() {
+        return tasks;
     }
 
-    public String getEmployeeStatus() {
-        return employeeStatus;
+    public Set<Payroll> getPayrolls() {
+        return payrolls;
+    }
+
+    public void setEmployeeID(Long employeeID) {
+        this.employeeID = employeeID;
     }
 
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "divisionID")
-    private Division division;
-
-    @OneToMany(mappedBy = "responsible", cascade = CascadeType.ALL)
-    private Set<Task> tasks = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-        name = "employee_project",
-        joinColumns = @JoinColumn(name = "employeeID"),
-        inverseJoinColumns = @JoinColumn(name = "projectID")
-    )
-    private Set<Project> projects = new HashSet<>();
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private Set<Payroll> payrolls = new HashSet<>();
-
-    // Constructeur par défaut et autres méthodes si nécessaire
-
-    public Employee() {
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    
-    public BigDecimal getSalary() {
-        return salary;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
     }
 
     public void setSalary(BigDecimal salary) {
         this.salary = salary;
     }
-    // Ajoutez ici d'autres méthodes utilitaires si nécessaire
 
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
+    }
 
-    public Set<Project> getProjects() {
-        return projects;
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setPayrolls(Set<Payroll> payrolls) {
+        this.payrolls = payrolls;
     }
 }
