@@ -1,43 +1,83 @@
 package com.example.GestionEntreprise.service;
 
 import com.example.GestionEntreprise.mappers.TaskMapper;
+import com.example.GestionEntreprise.model.Employee;
+import com.example.GestionEntreprise.model.ProjectPhase;
 import com.example.GestionEntreprise.model.Task;
 import com.example.GestionEntreprise.dtos.TaskDto;
+import com.example.GestionEntreprise.repository.EmployeeRepository;
+import com.example.GestionEntreprise.repository.ProjectPhaseRepository;
 import com.example.GestionEntreprise.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ProjectPhaseRepository projectPhaseRepository;
+    private final TaskMapper taskMapper;
 
     @Autowired
-    private TaskMapper taskMapper;
-
-    public List<Task> findAll() {
-        return taskRepository.findAll();
+    public TaskService(TaskRepository taskRepository,
+                       EmployeeRepository employeeRepository,
+                       ProjectPhaseRepository projectPhaseRepository,
+                       TaskMapper taskMapper) {
+        this.taskRepository = taskRepository;
+        this.employeeRepository = employeeRepository;
+        this.projectPhaseRepository = projectPhaseRepository;
+        this.taskMapper = taskMapper;
     }
 
-    public TaskDto findById(Long id){
-        TaskMapper map = new TaskMapper();
+    public List<TaskDto> findAll() {
+        List<Task> listOfTasks = taskRepository.findAll();
+        List<TaskDto> listeTaskDtos = new ArrayList<>();
 
-        return map.mapToTaskDto(taskRepository.findById(id).get());
+        listOfTasks.forEach(task -> {
+            listeTaskDtos.add(taskMapper.mapToTaskDto(task));
+        });
+
+        return listeTaskDtos;
     }
 
-    public void updateTasks(Set<Task> tasks) {
-        for (Task task : tasks) {
-            if (taskRepository.existsById(task.getTaskID())) {
-                taskRepository.save(task);
-            } else {
-                throw new IllegalArgumentException("Task not found");
-            }
-        }
+    public TaskDto findById(Long id) throws Exception {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new Exception("Task : " + id + "Not Found"));
+
+        return taskMapper.mapToTaskDto(task);
     }
 
+    public Task add(TaskDto taskDto) {
+        Task task = taskMapper.mapToTask(taskDto);
+        return taskRepository.save(task);
+    }
+
+    public TaskDto updateTask(TaskDto taskDto, Long id) throws Exception {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new Exception("Task : " + id + "Not Found"));
+
+        task.setStartDate(taskDto.getStartDate());
+        task.setEndDate(taskDto.getEndDate());
+        task.setDescription(taskDto.getDescription());
+
+        Optional<Employee> employee = employeeRepository.findById(taskDto.getTaskID());
+        employee.ifPresent(task::setResponsible);
+
+        Optional<ProjectPhase> projectPhase = projectPhaseRepository.findById(taskDto.getProjectPhaseId());
+        projectPhase.ifPresent(task::setProjectPhase);
+
+        taskRepository.save(task);
+        return taskMapper.mapToTaskDto(task);
+    }
+
+    public void delete(Long id) throws Exception {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new Exception("Task : " + id + "Not Found"));
+
+        taskRepository.delete(task);
+    }
 }

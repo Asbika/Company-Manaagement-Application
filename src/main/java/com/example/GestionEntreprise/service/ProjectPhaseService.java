@@ -134,7 +134,6 @@ public class ProjectPhaseService {
                 .map(taskDto -> taskMapper.mapToTask(taskDto))
                 .collect(Collectors.toSet());
         updatesTasks.forEach(task -> task.setProjectPhase(projectPhase));
-        taskService.updateTasks(updatesTasks);
         projectPhase.setTasks(updatesTasks);
         projectPhaseRepository.save(projectPhase);
         return projectPhaseMapper.fromProjectPhase(projectPhase);
